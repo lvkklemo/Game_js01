@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <style type="text/css">
+        body,div,span,a{
+            padding:0;
+            margin:0;
+        }
+    </style>
+  
+    <script>
+        //绘制地图
+        function Map(){
+            this.createMap = function(){
+                var width = 800;
+                var height=400;
+                var div = document.createElement('div');
+                div.style.width = width+'px';
+                div.style.height = height+'px';
+                div.style.backgroundColor = 'white';
+                div.style.backgroundImage = 'url(./123.png)';
+                document.body.appendChild(div);
+            }
+        }
+
+        //绘制食物
+        function Food(){
+           var len = 20;
+            this.showFood = function(){
+                piece = document.createElement('div');
+                piece.style.width = piece.style.height = len+'px';
+                piece.style.backgroundColor = 'green';
+
+                var xfood = Math.random()*40;//0-40随机数
+                var xFood= Math.floor(xfood);
+                //window.alert(xFood);
+
+                var yfood = Math.random()*19;
+                var yFood = Math.floor(yfood);
+
+                console.log(xFood,yFood);
+
+                piece.style.position = 'absolute';
+                piece.style.left = xFood*len + 'px';
+                piece.style.top = yFood*len + 'px';
+                document.body.appendChild(piece);
+            }
+        }
+
+        //3绘制小蛇
+         function Snake (){
+         //snackBody可以发生变化,因此声明为公开的
+             //[x,y,color,蛇节对象]
+             this.snackBody = [[0,1,'green',null],[1,1,'green',null],[2,1,'green',null],[3,1,'red',null]];
+
+             //a绘制小蛇
+             this.showSnack = function () {
+                 //遍历蛇节,并依次创建即可
+                 for(var i=0;i<this.snackBody.length;i++){
+                     this.snackBody[i];
+
+                     if(this.snackBody[i][3] === null){
+                         //创建蛇节div
+                         this.snackBody[i][3] = document.createElement('div');
+                     }
+
+                     //设置css样式 宽度高度 颜色
+                     this.snackBody[i][3].style.width = this.snackBody[i][3].style.height='20px';
+                     this.snackBody[i][3].style.backgroundColor = this.snackBody[i][2];
+
+                     //绝对定位及位置
+                     this.snackBody[i][3].style.position = 'absolute';
+                     this.snackBody[i][3].style.left = this.snackBody[i][0]*20 + 'px';
+                     this.snackBody[i][3].style.top =  this.snackBody[i][1]*20 + 'px';
+                     //把蛇节追加body
+                     document.body.appendChild(this.snackBody[i][3]);
+                 }
+             }
+
+             //b移动小蛇
+             this.redirect = 'right';
+             this.moveSnack = function () {
+                 //非蛇头蛇节 当前蛇节的新坐标是下个蛇节的旧坐标
+                 for(var i=0;i<this.snackBody.length-1;i++){
+                     this.snackBody[i][0] = this.snackBody[i+1][0];
+                     this.snackBody[i][1] = this.snackBody[i+1][1];
+                 }
+
+                 if(this.redirect==='right'){
+                   //蛇头的x坐标累加
+                     this.snackBody[this.snackBody.length-1][0] += 1;
+                 }
+                 if(this.redirect==='left'){
+                     //蛇头的x坐标累-
+                     this.snackBody[this.snackBody.length-1][0] -= 1;
+                 }
+                 if(this.redirect==='top'){
+                     //蛇头的y坐标累-
+                     this.snackBody[this.snackBody.length-1][1] -= 1;
+                 }
+                 if(this.redirect==='down'){
+                     //蛇头的y坐标累加
+                     this.snackBody[this.snackBody.length-1][1] += 1;
+                 }
+                 //根据新坐标绘制小蛇
+                 this.showSnack();
+             }
+         }
+
+        //点击按钮改变食物位置
+        function changeFoodPosition(){
+            var button = document.createElement('input');
+            button.value = '改变食物位置';
+            button.type = 'button';
+            button.style.marginTop = '30px';
+            button.onclick = function(){
+                window.alert('点击我');
+
+            }
+            document.body.appendChild(button);
+        }
+
+        window.onload = function(){
+
+            var  map = new Map();
+            map.createMap();
+
+            var food = new Food();
+            food.showFood();
+
+            changeFoodPosition();
+
+            //3创建蛇对象
+            snack = new Snake();
+            snack.showSnack();
+            //间隔函数使小蛇发生移动
+            setInterval("snack.moveSnack()",50);
+            //键盘事件
+            document.onkeydown = function(event){
+
+                console.log(event.keyCode);
+                if(event.keyCode == 87){
+                    snack.redirect = 'top';
+                }
+                if(event.keyCode == 83){
+                    snack.redirect = 'down';
+                }
+                if(event.keyCode == 65){
+                    snack.redirect = 'left';
+                }
+                if(event.keyCode == 68){
+                    snack.redirect = 'right';
+                }
+
+            }
+        }
+
+    </script>
+</head>
+<body>
+
+<!--<input type="button" value="移动食物" onclick="changeFoodPosition()"/>-->
+
+</body>
+</html>
