@@ -29,24 +29,32 @@
         //绘制食物
         function Food(){
            var len = 20;
+
+            this.xFood = 0;
+            this.yFood = 0;
+            this.piece=null;
+
             this.showFood = function(){
-                piece = document.createElement('div');
-                piece.style.width = piece.style.height = len+'px';
-                piece.style.backgroundColor = 'green';
+                if(this.piece == null){
+                    this.piece  = document.createElement('div');
+                }
+
+                this.piece .style.width = this.piece .style.height = len+'px';
+                this.piece .style.backgroundColor = 'green';
 
                 var xfood = Math.random()*40;//0-40随机数
-                var xFood= Math.floor(xfood);
+                this.xFood= Math.floor(xfood);
                 //window.alert(xFood);
 
                 var yfood = Math.random()*19;
-                var yFood = Math.floor(yfood);
+                this.yFood = Math.floor(yfood);
 
-                console.log(xFood,yFood);
+                console.log(this.xFood,this.yFood);
 
-                piece.style.position = 'absolute';
-                piece.style.left = xFood*len + 'px';
-                piece.style.top = yFood*len + 'px';
-                document.body.appendChild(piece);
+                this.piece .style.position = 'absolute';
+                this.piece .style.left = this.xFood*len + 'px';
+                this.piece .style.top = this.yFood*len + 'px';
+                document.body.appendChild(this.piece);
             }
         }
 
@@ -105,6 +113,36 @@
                      //蛇头的y坐标累加
                      this.snackBody[this.snackBody.length-1][1] += 1;
                  }
+
+                 //判断蛇头碰到食物
+                 //蛇头坐标
+                 var xSnake = this.snackBody[this.snackBody.length-1][0];
+                 var ySnake = this.snackBody[this.snackBody.length-1][1];
+
+                 //食物坐标
+                 if((food.xFood == xSnake)&&(food.yFood == ySnake)){
+                     console.log('找到了');
+                     //吃到食物增加蛇节
+                     var newjie = [this.snackBody[0][0],this.snackBody[0][1],'green',null];
+                     this.snackBody.unshift(newjie);
+                     food.showFood();
+                 }
+
+                 //控制小蛇范围
+                 if(xSnake<0||xSnake>39||ySnake<0||ySnake>19){
+                     alert('game over');
+                     clearInterval(timeinterval);
+                     return ;
+                 }
+                 //不可次自己
+                 for(var k=0;k<this.snackBody.length-1;k++){
+                   if((this.snackBody[k][0] == xSnake) && (this.snackBody[k][1] == ySnake)){
+                       alert('game over');
+                       clearInterval(timeinterval);
+                       return ;
+                   }
+                 }
+
                  //根据新坐标绘制小蛇
                  this.showSnack();
              }
@@ -117,7 +155,7 @@
             button.type = 'button';
             button.style.marginTop = '30px';
             button.onclick = function(){
-                window.alert('点击我');
+                 food.showFood();
 
             }
             document.body.appendChild(button);
@@ -128,7 +166,7 @@
             var  map = new Map();
             map.createMap();
 
-            var food = new Food();
+            food = new Food();
             food.showFood();
 
             changeFoodPosition();
@@ -137,7 +175,7 @@
             snack = new Snake();
             snack.showSnack();
             //间隔函数使小蛇发生移动
-            setInterval("snack.moveSnack()",50);
+           timeinterval= setInterval("snack.moveSnack()",100);
             //键盘事件
             document.onkeydown = function(event){
 
